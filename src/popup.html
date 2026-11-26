@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>StudyDeck 單字收集</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { width: 300px; padding: 12px 14px; }
+    ul { margin: 8px 0; padding: 0; list-style: none; max-height: 260px; overflow-y: auto; }
+    li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+    li strong { margin-right: 4px; }
+    .hint { margin: 0 0 8px; padding: 6px 8px; border-radius: 6px; background: var(--accent-soft); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>StudyDeck 單字收集</h1>
+  <p class="hint">在網頁上選字 → 按右鍵 →「加到 StudyDeck 待學習」</p>
+  <p id="status" class="muted">讀取中…</p>
+  <ul id="words"></ul>
+  <div class="row">
+    <button id="open" type="button">打開待學習</button>
+    <button id="settings" type="button" class="secondary">設定</button>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

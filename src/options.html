@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>StudyDeck 單字收集：設定</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    main { max-width: 420px; margin: 32px auto; padding: 0 16px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>StudyDeck 單字收集：設定</h1>
+    <p id="who" class="muted"></p>
+    <form id="form">
+      <label>StudyDeck 網址
+        <input id="server" type="url" placeholder="https://你的 StudyDeck 網址" required>
+      </label>
+      <label>帳號或 Email
+        <input id="identifier" autocomplete="username" required>
+      </label>
+      <label>密碼
+        <input id="password" type="password" autocomplete="current-password" required>
+      </label>
+      <div class="row">
+        <button type="submit">登入</button>
+        <button id="logout" type="button" class="secondary">登出</button>
+      </div>
+    </form>
+    <p id="status"></p>
+    <p class="muted">密碼不會存起來，只存登入後拿到的憑證（180 天內有用過就會自動延長）。</p>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

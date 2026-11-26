@@ -1,0 +1,7 @@
+dist/
+__pycache__/
+.DS_Store
+
+# 服務帳戶金鑰絕對不能進 git（只放在 GitHub secret）
+*.json
+!src/manifest.json

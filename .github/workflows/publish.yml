@@ -1,0 +1,36 @@
+# 打 v* 標籤（例如 v1.0.1）時：檢查版本號 → 打包 → 上傳 Chrome Web Store → 送審
+# 需要在 GitHub repo 的 Settings → Secrets and variables → Actions 設好三個 secret（見 docs/上架與自動發布.md）
+name: Publish to Chrome Web Store
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 標籤要跟 manifest.json 的版本一樣
+        run: |
+          version=$(node -p "require('./src/manifest.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "標籤是 $GITHUB_REF_NAME，但 src/manifest.json 的 version 是 $version，兩個要一樣"
+            exit 1
+          fi
+
+      - name: 打包
+        id: pack
+        run: echo "zip=$(python3 scripts/pack.py)" >> "$GITHUB_OUTPUT"
+
+      - name: 上傳並送審
+        run: node scripts/publish.mjs "${{ steps.pack.outputs.zip }}"
+        env:
+          CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
