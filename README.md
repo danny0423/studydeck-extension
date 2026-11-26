@@ -9,15 +9,17 @@
 
 ## 流程與用到的 StudyDeck API
 
-StudyDeck 後端沒有為這個 extension 改任何東西，用的都是網站本來就有的 API。
+StudyDeck 後端只為這個 extension 加了「待學習分類」（`/api/todo-groups`），其他都是網站原本就有的 API。
 
 | 步驟 | 做什麼 | 程式 |
 | --- | --- | --- |
 | 1 | 抓選的字和所在的那一句（跳過日文注音 `<rt>`） | `src/grab.js`、`src/sentence.js` |
-| 2 | 猜語言（有假名→日文） | `src/lang.js` |
+| 2 | 語言：設定頁指定的，或自動判斷（有假名→日文） | `src/lang.js` |
 | 3 | 查意思、讀音、原形、詞性：`POST /api/explain` | `src/api.js` |
-| 4 | 存進待學習：`POST /api/todo-words`（同語言同一個字只存一次） | `src/api.js` |
-| 5 | 跳通知 | `src/background.js` |
+| 4 | 存進待學習、設定頁選的分類：`POST /api/todo-words`（同語言同一個字只存一次） | `src/api.js` |
+| 5 | 跳通知（加到哪個分類；分類被刪了會提醒） | `src/background.js` |
+
+設定頁的分類選單：`GET /api/todo-groups`。分類要到 StudyDeck 網站「你的資料庫 → 待學習」建立。
 
 ## 開發時在自己的 Chrome 試裝
 

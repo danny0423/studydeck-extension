@@ -59,7 +59,13 @@ button.secondary {
   color: var(--accent);
 }
 
-input {
+h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+input,
+select {
   box-sizing: border-box;
   width: 100%;
   padding: 6px 8px;
@@ -73,6 +79,14 @@ input {
 label {
   display: block;
   margin-bottom: 12px;
+}
+
+label.spaced {
+  margin-top: 16px;
+}
+
+#target {
+  margin-top: -8px;
 }
 
 .row {

@@ -1,5 +1,6 @@
-// popup：顯示登入狀態、最近加的 10 個待學習
+// popup：顯示登入狀態、字會加到哪個分類、最近加的 10 個待學習
 import { ApiError, listTodo, me } from './api.js';
+import { langLabel } from './lang.js';
 import { getSettings, logout, saveSettings } from './settings.js';
 
 const $ = (id) => document.getElementById(id);
@@ -36,6 +37,7 @@ async function load() {
     if (token) await saveSettings({ token });
     const { words } = await listTodo({ ...settings, token: token || settings.token });
     setStatus(`${settings.username}　待學習 ${words.length} 個${words.length > SHOW ? `（顯示最新 ${SHOW} 個）` : ''}`);
+    $('target').textContent = `加到：${settings.groupName || '未分類'}　語言：${langLabel(settings.lang)}（到「設定」改）`;
     renderWords(words);
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {

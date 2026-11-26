@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "StudyDeck 單字收集",
   "short_name": "StudyDeck",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "在任何網站選字、按右鍵，就把單字和那一句例句加到 StudyDeck 的待學習。",
   "icons": {
     "16": "icons/icon16.png",

@@ -5,6 +5,20 @@ const HANGUL = /[가-힯]/;
 const HAN = /[一-鿿]/; // 漢字
 const BY_PAGE = { en: 'en-US', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', ja: 'ja-JP', ko: 'ko-KR' };
 
+// 設定頁「單字的語言」選單
+export const LANG_OPTIONS = [
+  ['auto', '自動判斷'],
+  ['ja-JP', '日文'],
+  ['en-US', '英文'],
+  ['zh-TW', '中文'],
+  ['ko-KR', '韓文'],
+  ['fr-FR', '法文'],
+  ['de-DE', '德文'],
+  ['es-ES', '西班牙文'],
+];
+
+export const langLabel = (code) => LANG_OPTIONS.find(([value]) => value === code)?.[1] ?? code;
+
 export function detectLang(word, sentence, pageLang = '') {
   const page = pageLang.toLowerCase().slice(0, 2);
   if (KANA.test(word) || KANA.test(sentence)) return 'ja-JP';

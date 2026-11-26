@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="ui.css">
   <style>
     main { max-width: 420px; margin: 32px auto; padding: 0 16px; }
+    section { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -29,6 +30,24 @@
     </form>
     <p id="status"></p>
     <p class="muted">密碼不會存起來，只存登入後拿到的憑證（180 天內有用過就會自動延長）。</p>
+
+    <!-- 登入後才顯示；改了就自動存 -->
+    <section id="prefs" hidden>
+      <h2>加字設定</h2>
+      <label>加到哪個分類
+        <select id="group"></select>
+      </label>
+      <p id="group-hint" class="muted"></p>
+      <div class="row">
+        <button id="reload-groups" type="button" class="secondary">重新讀取分類</button>
+        <button id="manage-groups" type="button" class="secondary">到網站管理分類</button>
+      </div>
+      <label class="spaced">單字的語言
+        <select id="lang"></select>
+      </label>
+      <p class="muted">自動判斷：有假名→日文、韓文字→韓文、漢字＋中文網頁→中文，其他看網頁的語言。</p>
+      <p id="prefs-status" class="muted"></p>
+    </section>
   </main>
   <script type="module" src="options.js"></script>
 </body>

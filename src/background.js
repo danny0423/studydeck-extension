@@ -1,8 +1,8 @@
 // 背景程式：右鍵選單「加到 StudyDeck 待學習」
-// 流程：抓選的字和那一句 → 叫 StudyDeck 單字解析查意思 → 存進待學習 → 跳通知
-import { ApiError, addTodo, explainWord } from './api.js';
+// 流程：抓選的字和那一句 → 叫 StudyDeck 單字解析查意思 → 存進待學習（設定頁選的分類）→ 跳通知
+import { ApiError, addTodo, explainWord, listGroups } from './api.js';
 import { detectLang } from './lang.js';
-import { getSettings, logout } from './settings.js';
+import { getSettings, logout, saveSettings } from './settings.js';
 
 const MENU_ID = 'studydeck-add';
 const MAX_WORD = 50; // 後端單字解析的上限（explain.js）
@@ -40,6 +40,35 @@ async function grab(info, tab) {
   }
 }
 
+// 字已經在待學習時，告訴使用者它在哪個分類：「（在「X」裡）」；未分類或查不到就不寫
+async function groupLabel(settings, groupId) {
+  if (groupId == null) return '';
+  try {
+    const { groups } = await listGroups(settings);
+    const group = groups.find((g) => g.id === groupId);
+    return group ? `（在「${group.name}」裡）` : '';
+  } catch {
+    return '';
+  }
+}
+
+async function notifySaved(settings, saved, added) {
+  const reading = saved.reading && saved.reading !== saved.word ? `（${saved.reading}）` : '';
+  const body = `${saved.word}${reading}　${saved.meaning || ''}`;
+  if (!added) {
+    notify(`已經在待學習裡了${await groupLabel(settings, saved.groupId)}`, body);
+    return;
+  }
+  // 設定的分類在網站上被刪了：StudyDeck 會放到未分類（回 groupId: null），設定也改回未分類。
+  // 舊版 StudyDeck 沒有分類功能，回傳根本沒有 groupId（undefined），不算這種情況
+  if (settings.groupId !== null && saved.groupId === null) {
+    await saveSettings({ groupId: null, groupName: '' });
+    notify('已加入待學習（未分類）', `${body}。你選的分類「${settings.groupName}」已經不在了，可以到設定頁重選。`);
+    return;
+  }
+  notify(settings.groupId !== null ? `已加入待學習・${settings.groupName}` : '已加入待學習', body);
+}
+
 async function collect(info, tab) {
   const settings = await getSettings();
   if (!settings.server || !settings.token) {
@@ -54,7 +83,8 @@ async function collect(info, tab) {
     notify('選太長了', `一次選一個字或一個詞（${MAX_WORD} 字以內）。`);
     return;
   }
-  const lang = detectLang(word, sentence, pageLang);
+  // 設定頁可以指定語言；選「自動判斷」才用猜的
+  const lang = settings.lang === 'auto' ? detectLang(word, sentence, pageLang) : settings.lang;
 
   await chrome.action.setBadgeText({ tabId: tab.id, text: '…' });
   try {
@@ -69,10 +99,11 @@ async function collect(info, tab) {
       partOfSpeech: result.partOfSpeech || '',
       sentence,
       translation: '',
+      // 不帶＝未分類（舊版 StudyDeck 沒有分類功能，會忽略這個欄位）
+      ...(settings.groupId !== null ? { groupId: settings.groupId } : {}),
     };
     const { word: saved, added } = await addTodo(settings, item);
-    const reading = saved.reading && saved.reading !== saved.word ? `（${saved.reading}）` : '';
-    notify(added ? '已加入待學習' : '已經在待學習裡了', `${saved.word}${reading}　${saved.meaning || ''}`);
+    await notifySaved(settings, saved, added);
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {
       await logout();
