@@ -5,3 +5,6 @@ __pycache__/
 # 服務帳戶金鑰絕對不能進 git（只放在 GitHub secret）
 *.json
 !src/manifest.json
+
+# 原始截圖（可能拍到網址、帳號、書籤），不進 git
+raw-screenshots/

@@ -41,5 +41,5 @@ StudyDeck 後端沒有為這個 extension 改任何東西，用的都是網站�
 ```bash
 python3 scripts/make_assets.py              # 重做圖示（來源：../quizlet 的網站圖示）和宣傳圖
 python3 scripts/pack.py                     # 打包成 dist/studydeck-extension-<版本>.zip
-python3 scripts/fit_screenshot.py 截圖.png   # 把截圖轉成商店要的 1280x800
+python3 scripts/fit_screenshot.py raw-screenshots/<你的檔名>.png   # 把截圖轉成商店要的 1280x800
 ```
